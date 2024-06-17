@@ -29,4 +29,57 @@ if __name__ == '__main__':
     with PyCallGraph(output=graphviz):
         foo()  # 調用主函數，這將觸發調用關係圖的生成
 
-        
+
+# ast + graphviz
+```python
+import ast
+import graphviz
+
+class FunctionCallVisitor(ast.NodeVisitor):
+    def __init__(self):
+        self.calls = []
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name):
+            self.calls.append((node.func.id, node.lineno))
+        self.generic_visit(node)
+
+class FunctionDefVisitor(ast.NodeVisitor):
+    def __init__(self):
+        self.functions = {}
+        self.calls = []
+
+    def visit_FunctionDef(self, node):
+        self.functions[node.name] = node.lineno
+        call_visitor = FunctionCallVisitor()
+        call_visitor.visit(node)
+        for func_call in call_visitor.calls:
+            self.calls.append((node.name, func_call[0]))
+        self.generic_visit(node)
+
+def parse_file(filename):
+    # 使用指定的編碼讀取文件
+    with open(filename, "r", encoding="utf-8") as source:
+        tree = ast.parse(source.read())
+    return tree
+
+def generate_call_graph(tree):
+    function_visitor = FunctionDefVisitor()
+    function_visitor.visit(tree)
+
+    dot = graphviz.Digraph(comment="Function Call Graph")
+
+    for function in function_visitor.functions.keys():
+        dot.node(function, function)
+
+    for caller, callee in function_visitor.calls:
+        dot.edge(caller, callee)
+
+    return dot
+
+if __name__ == "__main__":
+    filename = "python_file.py"  # 替換為你的 Python 文件
+    tree = parse_file(filename)
+    dot = generate_call_graph(tree)
+    dot.render("python_file Graph", format="png", cleanup=True)
+
