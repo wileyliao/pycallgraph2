@@ -28,7 +28,7 @@ if __name__ == '__main__':
     graphviz.output_file = 'callgraph.png'  # 指定輸出文件
     with PyCallGraph(output=graphviz):
         foo()  # 調用主函數，這將觸發調用關係圖的生成
-
+```
 
 # ast + graphviz
 ```python
@@ -82,4 +82,4 @@ if __name__ == "__main__":
     tree = parse_file(filename)
     dot = generate_call_graph(tree)
     dot.render("python_file Graph", format="png", cleanup=True)
-
+```
