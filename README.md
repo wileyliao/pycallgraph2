@@ -8,11 +8,11 @@ check calling relation <br>
 
 
 
-
+```python
 from pycallgraph2 import PyCallGraph
 from pycallgraph2.output import GraphvizOutput
 
-# 定義一些示例函數
+## 定義一些示例函數
 def foo():
     bar()
 
@@ -26,7 +26,6 @@ def baz():
 if __name__ == '__main__':
     graphviz = GraphvizOutput()
     graphviz.output_file = 'callgraph.png'  # 指定輸出文件
-
     with PyCallGraph(output=graphviz):
         foo()  # 調用主函數，這將觸發調用關係圖的生成
 
