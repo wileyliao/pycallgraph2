@@ -78,7 +78,7 @@ def generate_call_graph(tree):
     return dot
 
 if __name__ == "__main__":
-    filename = "python_file.py"  # 替換為你的 Python 文件
+    filename = "python_file.py"  # 欲產生calling graph 的python檔
     tree = parse_file(filename)
     dot = generate_call_graph(tree)
     dot.render("python_file Graph", format="png", cleanup=True)
